@@ -38,7 +38,9 @@ type Record struct {
 func ReadInitialRecord(conn net.Conn, timeout time.Duration, maxSize int) (*Record, []byte, error) {
 	if timeout > 0 {
 		_ = conn.SetReadDeadline(time.Now().Add(timeout))
-		defer conn.SetReadDeadline(time.Time{})
+		defer func() {
+			_ = conn.SetReadDeadline(time.Time{})
+		}()
 	}
 
 	header := make([]byte, 5)
@@ -146,20 +148,20 @@ func (rec *Record) Write(conn net.Conn) error {
 	return nil
 }
 
-func selectGapDuration(min, max time.Duration) time.Duration {
-	if max <= 0 {
+func selectGapDuration(minDuration, maxDuration time.Duration) time.Duration {
+	if maxDuration <= 0 {
 		return 0
 	}
-	if min < 0 {
-		min = 0
+	if minDuration < 0 {
+		minDuration = 0
 	}
-	if max < min {
-		max = min
+	if maxDuration < minDuration {
+		maxDuration = minDuration
 	}
-	span := max - min
+	span := maxDuration - minDuration
 	if span <= 0 {
-		return max
+		return maxDuration
 	}
 	n := rand.Int63n(int64(span) + 1)
-	return min + time.Duration(n)
+	return minDuration + time.Duration(n)
 }

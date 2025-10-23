@@ -37,7 +37,7 @@ func NewRootCommand(run func(Config) error) *cobra.Command {
 		Short:         "Transparent TLS ClientHello record splitter",
 		SilenceUsage:  true,
 		SilenceErrors: true,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			minGap, maxGap, err := parseGapRange(gapSpec)
 			if err != nil {
 				return err
@@ -131,19 +131,19 @@ func parseGapRange(spec string) (int, int, error) {
 	if maxStr == "" {
 		maxStr = "0"
 	}
-	min, err := strconv.Atoi(minStr)
+	minVal, err := strconv.Atoi(minStr)
 	if err != nil {
 		return 0, 0, errors.New("gap min must be an integer")
 	}
-	max, err := strconv.Atoi(maxStr)
+	maxVal, err := strconv.Atoi(maxStr)
 	if err != nil {
 		return 0, 0, errors.New("gap max must be an integer")
 	}
-	if min < 0 || max < 0 {
+	if minVal < 0 || maxVal < 0 {
 		return 0, 0, errors.New("gap values must be non-negative")
 	}
-	if max != 0 && max < min {
+	if maxVal != 0 && maxVal < minVal {
 		return 0, 0, errors.New("gap max must not be less than min")
 	}
-	return min, max, nil
+	return minVal, maxVal, nil
 }
