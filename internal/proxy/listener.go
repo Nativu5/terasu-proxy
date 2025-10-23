@@ -16,7 +16,7 @@ import (
 
 func newTransparentListener(ctx context.Context, config utils.Config, logger *logrus.Entry) (net.Listener, error) {
 	lc := net.ListenConfig{
-		Control: func(_, address string, c syscall.RawConn) error {
+		Control: func(_, _ string, c syscall.RawConn) error {
 			var setupErr error
 			if err := c.Control(func(fd uintptr) {
 				if err := unix.SetsockoptInt(int(fd), unix.SOL_SOCKET, unix.SO_REUSEADDR, 1); err != nil {

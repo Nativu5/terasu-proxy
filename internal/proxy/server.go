@@ -32,7 +32,7 @@ func NewServer(config utils.Config, logger *logrus.Entry) *Server {
 
 	dialer := &net.Dialer{
 		Timeout: config.DialTimeout,
-		Control: func(_, address string, c syscall.RawConn) error {
+		Control: func(_, _ string, c syscall.RawConn) error {
 			if config.Mark == 0 {
 				return nil
 			}

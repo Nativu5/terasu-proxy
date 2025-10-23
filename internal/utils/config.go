@@ -37,7 +37,7 @@ func NewRootCommand(run func(Config) error) *cobra.Command {
 		Short:         "Transparent TLS ClientHello record splitter",
 		SilenceUsage:  true,
 		SilenceErrors: true,
-		RunE: func(_ *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			minGap, maxGap, err := parseGapRange(gapSpec)
 			if err != nil {
 				return err
